@@ -183,7 +183,7 @@ const GuidedProjects = () => {
           </div>
 
           {/* Special Services */}
-          <section className="bg-industrial-gray-light rounded-lg p-8">
+          <section className="bg-industrial-gray-light rounded-lg p-8 mb-8">
             <div className="text-center mb-8">
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
                 Our Special Services
