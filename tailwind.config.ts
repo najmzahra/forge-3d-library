@@ -61,7 +61,32 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Industrial specific colors
+				industrial: {
+					red: 'hsl(var(--industrial-red))',
+					'gray-light': 'hsl(var(--industrial-gray-light))',
+					'gray-dark': 'hsl(var(--industrial-gray-dark))',
+					steel: 'hsl(var(--industrial-steel))',
+					blue: 'hsl(var(--industrial-blue))',
+					white: 'hsl(var(--industrial-white))'
 				}
+			},
+			fontFamily: {
+				'industrial': ['Inter', 'sans-serif'],
+				'sans': ['Inter', 'sans-serif']
+			},
+			backgroundImage: {
+				'gradient-industrial': 'var(--gradient-industrial)',
+				'gradient-hero': 'var(--gradient-hero)'
+			},
+			boxShadow: {
+				'industrial': 'var(--shadow-industrial)',
+				'card': 'var(--shadow-card)',
+				'button': 'var(--shadow-button)'
+			},
+			transitionTimingFunction: {
+				'industrial': 'cubic-bezier(0.4, 0, 0.2, 1)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
