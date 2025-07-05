@@ -116,9 +116,9 @@ const GuidedProjects = () => {
 
         <div className="container mx-auto px-4 py-12">
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-20">
             {guidedProjects.map((project) => (
-              <Card key={project.id} className="bg-industrial-white border-industrial-steel/20 shadow-card hover:shadow-industrial transition-all duration-300 h-full">
+              <Card key={project.id} className="bg-industrial-white border-industrial-steel/20 shadow-card hover:shadow-industrial transition-all duration-300 flex flex-col h-full">
                 <div className="aspect-[16/10] bg-gradient-industrial flex items-center justify-center relative">
                   <div className="text-industrial-steel/50 text-4xl font-bold">PROJECT</div>
                   <div className="absolute top-4 left-4">
@@ -132,7 +132,7 @@ const GuidedProjects = () => {
                   </div>
                 </div>
                 
-                <CardContent className="p-6 flex flex-col h-full">
+                <CardContent className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl font-semibold text-foreground mb-3">
                     {project.title}
                   </h3>
@@ -164,7 +164,7 @@ const GuidedProjects = () => {
                     </ul>
                   </div>
 
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-4 mt-auto">
                     <div className="text-2xl font-bold text-primary">
                       ${project.price}
                     </div>
@@ -203,12 +203,6 @@ const GuidedProjects = () => {
                     <p className="text-muted-foreground mb-4">
                       {service.description}
                     </p>
-                    <div className="text-primary font-semibold mb-4">
-                      {service.price}
-                    </div>
-                    <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                      Learn More
-                    </Button>
                   </CardContent>
                 </Card>
               ))}

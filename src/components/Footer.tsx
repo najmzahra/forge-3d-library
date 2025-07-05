@@ -6,7 +6,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-industrial-gray-dark text-industrial-white py-12 mt-20">
+    <footer className="bg-industrial-gray-dark text-industrial-white py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and description */}
@@ -14,7 +14,7 @@ const Footer = () => {
             <img 
               src="/lovable-uploads/78017245-bd61-4a1b-8435-32d92d6eb663.png" 
               alt="Industrial 3D Store" 
-              className="h-12 w-auto mb-4 filter invert"
+              className="h-20 w-auto mb-4 filter invert"
             />
             <p className="text-industrial-steel text-sm leading-6 max-w-md">
               The premier platform for industrial 3D models and guided learning projects. 
@@ -90,7 +90,7 @@ const Footer = () => {
 
         <div className="border-t border-industrial-steel/30 mt-8 pt-8 text-center">
           <p className="text-industrial-steel text-sm">
-            © 2024 Industrial 3D Store. All rights reserved.
+            © 2025 Industrial 3D Store. All rights reserved.
           </p>
         </div>
       </div>

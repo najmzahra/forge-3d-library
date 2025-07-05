@@ -1,23 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import AuthModal from "@/components/AuthModal";
 
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openAuthModal = (mode: 'signin' | 'signup') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
+
   return (
     <header className="w-full bg-industrial-white border-b-2 border-industrial-steel/20 sticky top-0 z-50 shadow-card">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-2 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" onClick={scrollToTop} className="flex items-center space-x-3 group">
           <img 
             src="/lovable-uploads/78017245-bd61-4a1b-8435-32d92d6eb663.png" 
             alt="Industrial 3D Store" 
-            className="h-16 w-auto transition-transform duration-300 group-hover:scale-105"
+            className="h-24 w-auto transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 
@@ -73,15 +82,29 @@ const Header = () => {
           
           {/* Auth buttons */}
           <div className="flex items-center space-x-2">
-            <Button variant="outline" className="font-industrial">
+            <Button 
+              variant="outline" 
+              className="font-industrial"
+              onClick={() => openAuthModal('signin')}
+            >
               Login
             </Button>
-            <Button variant="default" className="bg-primary hover:bg-primary/90 font-industrial">
+            <Button 
+              variant="default" 
+              className="bg-primary hover:bg-primary/90 font-industrial"
+              onClick={() => openAuthModal('signup')}
+            >
               Sign Up
             </Button>
           </div>
         </div>
       </div>
+
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+      />
     </header>
   );
 };

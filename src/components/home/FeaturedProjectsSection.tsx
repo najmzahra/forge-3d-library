@@ -126,9 +126,6 @@ const FeaturedProjectsSection = () => {
                       <span>{project.downloads}</span>
                     </div>
                   </div>
-                  <div className="font-semibold text-primary">
-                    ${project.price}
-                  </div>
                 </div>
 
                 <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">

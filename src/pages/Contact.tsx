@@ -20,121 +20,83 @@ const Contact = () => {
               Have questions about our platform or need technical support? 
               We're here to help you succeed with your engineering projects.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          </div>          <div className="max-w-2xl mx-auto">
             {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <Card className="bg-industrial-white border-industrial-steel/20 shadow-card">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-semibold text-foreground mb-6">
-                    Send us a Message
-                  </h2>
-                  
-                  <form className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="firstName" className="text-foreground font-medium">
-                          First Name
-                        </Label>
-                        <Input 
-                          id="firstName"
-                          placeholder="Enter your first name"
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="lastName" className="text-foreground font-medium">
-                          Last Name
-                        </Label>
-                        <Input 
-                          id="lastName"
-                          placeholder="Enter your last name"
-                          className="mt-1"
-                        />
-                      </div>
-                    </div>
-
+            <Card className="bg-industrial-white border-industrial-steel/20 shadow-card">
+              <CardContent className="p-8">
+                <h2 className="text-2xl font-semibold text-foreground mb-6">
+                  Send us a Message
+                </h2>
+                
+                <form className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="email" className="text-foreground font-medium">
-                        Email Address
+                      <Label htmlFor="firstName" className="text-foreground font-medium">
+                        First Name
                       </Label>
                       <Input 
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email address"
+                        id="firstName"
+                        placeholder="Enter your first name"
                         className="mt-1"
                       />
                     </div>
-
                     <div>
-                      <Label htmlFor="subject" className="text-foreground font-medium">
-                        Subject
+                      <Label htmlFor="lastName" className="text-foreground font-medium">
+                        Last Name
                       </Label>
                       <Input 
-                        id="subject"
-                        placeholder="What is this regarding?"
+                        id="lastName"
+                        placeholder="Enter your last name"
                         className="mt-1"
                       />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="message" className="text-foreground font-medium">
-                        Message
-                      </Label>
-                      <Textarea 
-                        id="message"
-                        placeholder="Please provide details about your inquiry..."
-                        rows={6}
-                        className="mt-1"
-                      />
-                    </div>
-
-                    <Button 
-                      type="submit"
-                      size="lg"
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                    >
-                      Send Message
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Contact Information */}
-            <div className="space-y-6">
-
-              {/* FAQ Section */}
-              <Card className="bg-industrial-white border-industrial-steel/20 shadow-card">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-foreground mb-4">
-                    Quick Help
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <div className="font-medium text-foreground text-sm">File Upload Issues?</div>
-                      <div className="text-muted-foreground text-sm">Check our supported formats and size limits</div>
-                    </div>
-                    
-                    <div>
-                      <div className="font-medium text-foreground text-sm">Payment Questions?</div>
-                      <div className="text-muted-foreground text-sm">Review our pricing and commission structure</div>
-                    </div>
-                    
-                    <div>
-                      <div className="font-medium text-foreground text-sm">Project Approval?</div>
-                      <div className="text-muted-foreground text-sm">Learn about our 48-hour validation process</div>
                     </div>
                   </div>
 
-                  <Button variant="outline" className="w-full mt-4 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                    View FAQ
+                  <div>
+                    <Label htmlFor="email" className="text-foreground font-medium">
+                      Email Address
+                    </Label>
+                    <Input 
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email address"
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="subject" className="text-foreground font-medium">
+                      Subject
+                    </Label>
+                    <Input 
+                      id="subject"
+                      placeholder="What is this regarding?"
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="message" className="text-foreground font-medium">
+                      Message
+                    </Label>
+                    <Textarea 
+                      id="message"
+                      placeholder="Please provide details about your inquiry..."
+                      rows={6}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit"
+                    size="lg"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  >
+                    Send Message
                   </Button>
-                </CardContent>
-              </Card>
-            </div>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

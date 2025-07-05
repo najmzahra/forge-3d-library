@@ -75,16 +75,6 @@ const CallToActionSection = () => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Secondary CTA */}
-        <div className="text-center">
-          <p className="text-industrial-steel mb-4">
-            Already have an account?
-          </p>
-          <Button variant="outline" className="border-industrial-white/30 text-industrial-white hover:bg-industrial-white hover:text-industrial-gray-dark">
-            Sign In
-          </Button>
-        </div>
       </div>
     </section>
   );

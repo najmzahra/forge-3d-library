@@ -15,21 +15,21 @@ const Upload = () => {
       id: 1,
       title: "Mechanical Joint Assembly",
       status: "approved",
-      submittedDate: "2024-01-15",
-      approvedDate: "2024-01-17"
+      submittedDate: "2025-01-15",
+      approvedDate: "2025-01-17"
     },
     {
       id: 2,
       title: "Bearing Housing Model",
       status: "pending",
-      submittedDate: "2024-01-20",
+      submittedDate: "2025-01-20",
       reason: ""
     },
     {
       id: 3,
       title: "Pump Casing Design",
       status: "denied",
-      submittedDate: "2024-01-10",
+      submittedDate: "2025-01-10",
       reason: "Model lacks technical drawings and specifications"
     }
   ];
@@ -131,7 +131,7 @@ const Upload = () => {
                       </Label>
                       <Input 
                         id="version"
-                        placeholder="e.g., 2023, 2024"
+                        placeholder="e.g., 2024, 2025"
                         className="mt-1"
                       />
                     </div>
