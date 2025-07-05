@@ -169,7 +169,7 @@ const GuidedProjects = () => {
                       ${project.price}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      One-time payment
+                      Complete project
                     </div>
                   </div>
 

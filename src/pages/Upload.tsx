@@ -70,7 +70,7 @@ const Upload = () => {
               Upload Your Project
             </h1>
             <p className="text-lg text-muted-foreground">
-              Share your 3D models and CAD files with our professional community
+              Share your project with our professional community
             </p>
           </div>
 

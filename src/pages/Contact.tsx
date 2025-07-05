@@ -104,63 +104,6 @@ const Contact = () => {
 
             {/* Contact Information */}
             <div className="space-y-6">
-              {/* Contact Details */}
-              <Card className="bg-industrial-white border-industrial-steel/20 shadow-card">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-foreground mb-4">
-                    Get in Touch
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-primary/10 rounded-lg p-2">
-                        <Mail className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Email</div>
-                        <div className="text-muted-foreground">support@industrial3dstore.com</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-primary/10 rounded-lg p-2">
-                        <Phone className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Phone</div>
-                        <div className="text-muted-foreground">+1 (555) 123-4567</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-primary/10 rounded-lg p-2">
-                        <MapPin className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Address</div>
-                        <div className="text-muted-foreground">
-                          123 Industrial Ave<br/>
-                          Engineering District, ED 12345
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-primary/10 rounded-lg p-2">
-                        <Clock className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Business Hours</div>
-                        <div className="text-muted-foreground">
-                          Mon - Fri: 9:00 AM - 6:00 PM<br/>
-                          Sat: 10:00 AM - 4:00 PM<br/>
-                          Sun: Closed
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* FAQ Section */}
               <Card className="bg-industrial-white border-industrial-steel/20 shadow-card">

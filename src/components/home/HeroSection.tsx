@@ -23,13 +23,13 @@ const HeroSection = () => {
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-industrial-white mb-6 leading-tight">
-            Accelerate Your
-            <span className="block text-primary">Engineering Workflow</span>
+            Your Industrial Files
+            <span className="block text-primary">Marketplace</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-industrial-steel mb-8 max-w-3xl mx-auto leading-relaxed">
-            Get ready-to-use CAD files, 3D models & real projects. 
-            Join the premier platform trusted by engineers and designers across industries.
+            Post, showcase, and sell your 3D industrial models with ease. 
+            Join our community of creators and start earning from your work.
           </p>
 
           {/* Stats */}
