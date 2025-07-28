@@ -10,6 +10,8 @@ import GuidedProjects from "./pages/GuidedProjects";
 import Contact from "./pages/Contact";
 import Upload from "./pages/Upload";
 import NotFound from "./pages/NotFound";
+import Layout from "./components/Layout";
+import { ZustandDemo } from "./components/ZustandDemo";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +35,7 @@ const App = () => (
             <Route path="/guided-projects" element={<GuidedProjects />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/demo" element={<Layout><ZustandDemo /></Layout>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

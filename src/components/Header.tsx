@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { LogOut, Settings, User, Upload } from "lucide-react";
-import AuthModal from "@/components/AuthModal";
+import { LogOut, Settings, User, Upload, ShoppingCart, Bell } from "lucide-react";
+import AuthModal from "@/components/SimpleAuthModal";
+import { CartSidebar } from "@/components/cart/CartSidebar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/hooks/stores/useCart";
+import { useApp } from "@/hooks/stores/useApp";
 
 const Header = () => {
   const location = useLocation();
@@ -13,6 +17,8 @@ const Header = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const { user, isAuthenticated, logout } = useAuth();
+  const { itemCount } = useCart();
+  const { cartOpen, setCartOpen, unreadCount, toggleCart } = useApp();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -85,6 +91,39 @@ const Header = () => {
 
         {/* Upload button - only show on library page */}
         <div className="flex items-center space-x-4">
+          {/* Shopping Cart */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleCart}
+            className="relative"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {itemCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
+              >
+                {itemCount}
+              </Badge>
+            )}
+          </Button>
+
+          {/* Notifications */}
+          {isAuthenticated && (
+            <Button variant="ghost" size="sm" className="relative">
+              <Bell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                >
+                  {unreadCount}
+                </Badge>
+              )}
+            </Button>
+          )}
+
           {currentPath === '/library' && (
             <Link to="/upload">
               <Button variant="default" className="bg-primary hover:bg-primary/90 text-primary-foreground font-industrial font-medium shadow-button">
@@ -171,7 +210,13 @@ const Header = () => {
       <AuthModal 
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        initialMode={authMode}
+        mode={authMode}
+        onModeChange={setAuthMode}
+      />
+
+      <CartSidebar 
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
       />
     </header>
   );

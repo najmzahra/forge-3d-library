@@ -70,6 +70,7 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   files: ProjectFile[];
+  price?: number; // For paid projects
 }
 
 export interface Category {
@@ -100,4 +101,86 @@ export interface ApiResponse<T> {
   data: T;
   message: string;
   success: boolean;
+}
+
+// Shopping Cart Types
+export interface CartItem {
+  id: string;
+  projectId: string;
+  title: string;
+  thumbnail: string;
+  price: number;
+  fileSize: string;
+  format: string;
+  author: ProjectAuthor;
+  addedAt: string;
+  quantity: number;
+}
+
+export interface Cart {
+  items: CartItem[];
+  total: number;
+  itemCount: number;
+}
+
+// File Upload Types
+export interface UploadedFileMetadata {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  uploadedAt: string;
+  url?: string;
+  thumbnailUrl?: string;
+  status: 'uploading' | 'processing' | 'completed' | 'failed';
+  progress?: number;
+  projectId?: string;
+}
+
+export interface ProjectUpload {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  price?: number;
+  files: UploadedFileMetadata[];
+  thumbnail?: string;
+  status: 'draft' | 'submitted' | 'reviewing' | 'approved' | 'rejected';
+  createdAt: string;
+  updatedAt: string;
+  isGuidedProject?: boolean;
+}
+
+// Auth State Types
+export interface AuthState {
+  user: AuthUser | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+// Notification Types
+export interface Notification {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
+// User Preferences
+export interface UserPreferences {
+  theme: 'light' | 'dark' | 'system';
+  language: string;
+  notifications: {
+    email: boolean;
+    push: boolean;
+    marketing: boolean;
+  };
+  privacy: {
+    showEmail: boolean;
+    showProjects: boolean;
+  };
 }

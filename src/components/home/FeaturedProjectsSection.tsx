@@ -2,12 +2,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Eye, Download, Star, Heart } from "lucide-react";
+import { Eye, Download, Star, Heart, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useFeaturedProjects } from "@/hooks/api/useProjects";
+import { useCart } from "@/hooks/stores/useCart";
+import { useApp } from "@/hooks/stores/useApp";
 
 const FeaturedProjectsSection = () => {
   const { data: featuredProjects = [], isLoading, error } = useFeaturedProjects(4);
+  const { addToCart, isInCart } = useCart();
+  const { notifySuccess } = useApp();
+
+  const handleAddToCart = (project: any) => {
+    addToCart(project);
+    notifySuccess('Added to cart', `${project.title} has been added to your cart`);
+  };
 
   if (error) {
     return (
@@ -103,9 +112,29 @@ const FeaturedProjectsSection = () => {
                       </div>
                     </div>
 
-                    <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                      View Details
-                    </Button>
+                    <div className="space-y-2">
+                      <Button size="sm" variant="outline" className="w-full">
+                        <Eye className="mr-2 h-3 w-3" />
+                        View Details
+                      </Button>
+                      
+                      {project.price > 0 ? (
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                          onClick={() => handleAddToCart(project)}
+                          disabled={isInCart(project.id)}
+                        >
+                          <ShoppingCart className="mr-2 h-3 w-3" />
+                          {isInCart(project.id) ? 'In Cart' : `$${project.price.toFixed(2)}`}
+                        </Button>
+                      ) : (
+                        <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 text-white">
+                          <Download className="mr-2 h-3 w-3" />
+                          Free Download
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}

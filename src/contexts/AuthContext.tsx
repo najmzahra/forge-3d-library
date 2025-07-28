@@ -1,9 +1,9 @@
-import React, { createContext, useContext, ReactNode } from 'react';
-import { useAuth as useAuthHook } from '@/hooks/api/useAuth';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
+import { useAuth as useAuthStore } from '@/hooks/stores/useAuth';
 import { AuthUser, LoginCredentials, RegisterData } from '@/types';
 
 interface AuthContextType {
-  user: AuthUser | null | undefined;
+  user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -18,61 +18,51 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const auth = useAuthHook();
+  const {
+    user,
+    isLoading,
+    isAuthenticated,
+    login: storeLogin,
+    register: storeRegister,
+    logout: storeLogout,
+    initializeAuth,
+  } = useAuthStore();
+
+  // Initialize auth state on mount
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
 
   const login = async (credentials: LoginCredentials) => {
-    return new Promise<void>((resolve, reject) => {
-      auth.login.mutate(credentials, {
-        onSuccess: (response) => {
-          if (response.success) {
-            resolve();
-          } else {
-            reject(new Error(response.message));
-          }
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+    try {
+      await storeLogin(credentials);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const register = async (data: RegisterData) => {
-    return new Promise<void>((resolve, reject) => {
-      auth.register.mutate(data, {
-        onSuccess: (response) => {
-          if (response.success) {
-            resolve();
-          } else {
-            reject(new Error(response.message));
-          }
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+    try {
+      await storeRegister(data);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = async () => {
-    return new Promise<void>((resolve, reject) => {
-      auth.logout.mutate(undefined, {
-        onSuccess: () => {
-          resolve();
-        },
-        onError: (error) => {
-          reject(error);
-        },
-      });
-    });
+    try {
+      await storeLogout();
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user: auth.user,
-        isLoading: auth.isLoading,
-        isAuthenticated: auth.isAuthenticated,
+        user,
+        isLoading,
+        isAuthenticated,
         login,
         register,
         logout,
