@@ -1,3 +1,13 @@
+---
+title: GitHub Sync
+slug: /
+---
+
+# Welcome to My Project
+
+This is the main README for the project...
+
+
 # Welcome to your Lovable project
 
 ## Project info
