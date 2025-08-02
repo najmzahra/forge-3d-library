@@ -6,46 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload as UploadIcon, FileText, Clock, CheckCircle, XCircle, AlertCircle, Shield } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useSearchParams, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Upload as UploadIcon, FileText, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 
 const Upload = () => {
-  const { user, isAuthenticated } = useAuth();
-  const [searchParams] = useSearchParams();
-  const uploadType = searchParams.get('type'); // 'guided' for guided projects
-  const [isGuidedProject, setIsGuidedProject] = useState(false);
-
-  useEffect(() => {
-    setIsGuidedProject(uploadType === 'guided');
-  }, [uploadType]);
-
-  // Redirect if not authenticated
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/" replace />;
-  }
-
-  // Check if user has permission for guided project submission
-  if (isGuidedProject && user.role !== 'admin') {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center">
-            <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-4">Access Restricted</h1>
-            <p className="text-muted-foreground mb-6">
-              Only administrators can submit guided projects.
-            </p>
-            <Button onClick={() => window.history.back()}>
-              Go Back
-            </Button>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
   // Mock user projects progress
   const userProjects = [
     {
@@ -103,22 +66,11 @@ const Upload = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            {isGuidedProject && (
-              <Alert className="mb-4 border-primary">
-                <Shield className="h-4 w-4" />
-                <AlertDescription>
-                  You are submitting a <strong>Guided Project</strong>. This requires admin approval and will be featured in the guided learning section.
-                </AlertDescription>
-              </Alert>
-            )}
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {isGuidedProject ? 'Submit Guided Project' : 'Upload Your Project'}
+              Upload Your Project
             </h1>
             <p className="text-lg text-muted-foreground">
-              {isGuidedProject 
-                ? 'Create a comprehensive learning experience with step-by-step guidance'
-                : 'Share your project with our professional community'
-              }
+              Share your project with our professional community
             </p>
           </div>
 
@@ -127,9 +79,7 @@ const Upload = () => {
             <div className="lg:col-span-2">
               <Card className="bg-industrial-white border-industrial-steel/20 shadow-card">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-foreground">
-                    {isGuidedProject ? 'Guided Project Details' : 'Project Details'}
-                  </CardTitle>
+                  <CardTitle className="text-2xl text-foreground">Project Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
