@@ -26,7 +26,7 @@ const Header = () => {
           <img 
             src="/lovable-uploads/78017245-bd61-4a1b-8435-32d92d6eb663.png" 
             alt="Industrial 3D Store" 
-            className="h-24 w-auto transition-transform duration-300 group-hover:scale-105"
+            className="h-32 w-auto transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 

@@ -116,7 +116,7 @@ const GuidedProjects = () => {
 
         <div className="container mx-auto px-4 py-12">
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
             {guidedProjects.map((project) => (
               <Card key={project.id} className="bg-industrial-white border-industrial-steel/20 shadow-card hover:shadow-industrial transition-all duration-300 flex flex-col h-full">
                 <div className="aspect-[16/10] bg-gradient-industrial flex items-center justify-center relative">
