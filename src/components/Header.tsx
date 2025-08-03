@@ -1,21 +1,36 @@
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
-import AuthModal from "@/components/AuthModal";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LogOut, User, Settings } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const openAuthModal = (mode: 'signin' | 'signup') => {
-    setAuthMode(mode);
-    setAuthModalOpen(true);
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error signing out",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      navigate('/');
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out.",
+      });
+    }
   };
 
   return (
@@ -80,31 +95,49 @@ const Header = () => {
             </Link>
           )}
           
-          {/* Auth buttons */}
-          <div className="flex items-center space-x-2">
-            <Button 
-              variant="outline" 
-              className="font-industrial"
-              onClick={() => openAuthModal('signin')}
-            >
-              Login
-            </Button>
-            <Button 
-              variant="default" 
-              className="bg-primary hover:bg-primary/90 font-industrial"
-              onClick={() => openAuthModal('signup')}
-            >
-              Sign Up
-            </Button>
-          </div>
+          {/* Auth section */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {user.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Dashboard</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <Link to="/auth">
+                <Button variant="outline" className="font-industrial">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button variant="default" className="bg-primary hover:bg-primary/90 font-industrial">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-
-      <AuthModal 
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        initialMode={authMode}
-      />
     </header>
   );
 };
