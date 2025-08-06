@@ -9,63 +9,157 @@ import { Badge } from "@/components/ui/badge";
 import { Upload as UploadIcon, FileText, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { FileUpload } from "@/components/FileUpload";
 import { FilePreview } from "@/components/FilePreview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileUploadMetadata } from "@/hooks/useFileUpload";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const Upload = () => {
   const [coverImage, setCoverImage] = useState<FileUploadMetadata[]>([]);
   const [projectFiles, setProjectFiles] = useState<FileUploadMetadata[]>([]);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    program: "",
+    version: "",
+    category: "",
+    tags: "",
+    price: "",
+    isFree: true
+  });
+  const [userProjects, setUserProjects] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  // Mock user projects progress
-  const userProjects = [
-    {
-      id: 1,
-      title: "Mechanical Joint Assembly",
-      status: "approved",
-      submittedDate: "2025-01-15",
-      approvedDate: "2025-01-17"
-    },
-    {
-      id: 2,
-      title: "Bearing Housing Model",
-      status: "pending",
-      submittedDate: "2025-01-20",
-      reason: ""
-    },
-    {
-      id: 3,
-      title: "Pump Casing Design",
-      status: "denied",
-      submittedDate: "2025-01-10",
-      reason: "Model lacks technical drawings and specifications"
+  // Fetch user projects
+  useEffect(() => {
+    const fetchUserProjects = async () => {
+      if (!user) return;
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (profile) {
+        const { data: projects } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('creator_id', profile.id)
+          .order('created_at', { ascending: false });
+        
+        setUserProjects(projects || []);
+      }
+    };
+    
+    fetchUserProjects();
+  }, [user]);
+
+  const handleSubmit = async () => {
+    if (!user) {
+      navigate('/auth');
+      return;
     }
-  ];
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case 'denied':
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-gray-500" />;
+    if (!formData.title || !formData.description || !coverImage.length || !projectFiles.length) {
+      toast({
+        title: "Missing required fields",
+        description: "Please fill in all required fields and upload files.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Get user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) {
+        throw new Error('Profile not found');
+      }
+
+      // Create project
+      const { error } = await supabase
+        .from('projects')
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          tags: formData.tags.split(',').map(tag => tag.trim()),
+          price: formData.isFree ? 0 : parseFloat(formData.price) || 0,
+          is_free: formData.isFree,
+          file_url: projectFiles[0]?.url,
+          preview_images: coverImage.map(img => img.url),
+          creator_id: profile.id,
+          is_published: false
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Project submitted successfully!",
+        description: "Your project is now under review. You'll be notified once it's approved.",
+      });
+
+      // Reset form
+      setFormData({
+        title: "",
+        description: "",
+        program: "",
+        version: "",
+        category: "",
+        tags: "",
+        price: "",
+        isFree: true
+      });
+      setCoverImage([]);
+      setProjectFiles([]);
+
+      // Refresh projects list
+      const { data: projects } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('creator_id', profile.id)
+        .order('created_at', { ascending: false });
+      
+      setUserProjects(projects || []);
+
+    } catch (error) {
+      console.error('Error submitting project:', error);
+      toast({
+        title: "Submission failed",
+        description: "There was an error submitting your project. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <Badge className="bg-green-500 text-white">Approved</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-500 text-white">Pending Review</Badge>;
-      case 'denied':
-        return <Badge className="bg-red-500 text-white">Denied</Badge>;
-      default:
-        return <Badge variant="secondary">Unknown</Badge>;
+  const getStatusIcon = (isPublished: boolean) => {
+    if (isPublished) {
+      return <CheckCircle className="h-4 w-4 text-green-500" />;
+    } else {
+      return <Clock className="h-4 w-4 text-yellow-500" />;
+    }
+  };
+
+  const getStatusBadge = (isPublished: boolean) => {
+    if (isPublished) {
+      return <Badge className="bg-green-500 text-white">Published</Badge>;
+    } else {
+      return <Badge className="bg-yellow-500 text-white">Under Review</Badge>;
     }
   };
 
@@ -98,6 +192,8 @@ const Upload = () => {
                     <Input 
                       id="projectName"
                       placeholder="Enter your project name"
+                      value={formData.title}
+                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                       className="mt-1"
                     />
                   </div>
@@ -109,6 +205,8 @@ const Upload = () => {
                     <Textarea 
                       id="description"
                       placeholder="Describe your project, its features, and applications..."
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                       rows={4}
                       className="mt-1"
                     />
@@ -119,7 +217,7 @@ const Upload = () => {
                       <Label htmlFor="program" className="text-foreground font-medium">
                         Program Used *
                       </Label>
-                      <Select>
+                      <Select value={formData.program} onValueChange={(value) => setFormData(prev => ({ ...prev, program: value }))}>
                         <SelectTrigger className="mt-1">
                           <SelectValue placeholder="Select program" />
                         </SelectTrigger>
@@ -141,6 +239,8 @@ const Upload = () => {
                       <Input 
                         id="version"
                         placeholder="e.g., 2024, 2025"
+                        value={formData.version}
+                        onChange={(e) => setFormData(prev => ({ ...prev, version: e.target.value }))}
                         className="mt-1"
                       />
                     </div>
@@ -242,9 +342,11 @@ const Upload = () => {
 
                   <Button 
                     size="lg"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                   >
-                    Submit for Review
+                    {isSubmitting ? "Submitting..." : "Submit for Review"}
                   </Button>
                   
                   <p className="text-sm text-muted-foreground text-center">
@@ -267,20 +369,18 @@ const Upload = () => {
                         <h4 className="font-medium text-foreground text-sm">
                           {project.title}
                         </h4>
-                        {getStatusIcon(project.status)}
+                        {getStatusIcon(project.is_published)}
                       </div>
                       
                       <div className="mb-2">
-                        {getStatusBadge(project.status)}
+                        {getStatusBadge(project.is_published)}
                       </div>
 
                       <div className="text-xs text-muted-foreground space-y-1">
-                        <p>Submitted: {project.submittedDate}</p>
-                        {project.status === 'approved' && project.approvedDate && (
-                          <p>Approved: {project.approvedDate}</p>
-                        )}
-                        {project.status === 'denied' && project.reason && (
-                          <p className="text-red-600">Reason: {project.reason}</p>
+                        <p>Submitted: {new Date(project.created_at).toLocaleDateString()}</p>
+                        <p>Downloads: {project.download_count}</p>
+                        {project.rating > 0 && (
+                          <p>Rating: {project.rating}/5</p>
                         )}
                       </div>
                     </div>

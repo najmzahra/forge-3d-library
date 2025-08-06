@@ -5,65 +5,40 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, Download, Star, Search, Filter } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Library = () => {
-  // Mock projects data with admin projects first
-  const projects = [
-    // Admin projects first
-    {
-      id: 1,
-      title: "Industrial Frame System",
-      type: "STEP",
-      program: "SolidWorks",
-      version: "2023",
-      price: 45,
-      views: 1250,
-      downloads: 340,
-      rating: 4.9,
-      description: "Complete industrial frame system with parametric components",
-      isAdmin: true
-    },
-    {
-      id: 2,
-      title: "Pneumatic Actuator Assembly",
-      type: "SLDPRT", 
-      program: "SolidWorks",
-      version: "2022",
-      price: 65,
-      views: 890,
-      downloads: 195,
-      rating: 4.8,
-      description: "High-precision pneumatic actuator with full assembly",
-      isAdmin: true
-    },
-    // Regular user projects
-    {
-      id: 3,
-      title: "Gear Assembly Model",
-      type: "DWG",
-      program: "AutoCAD",
-      version: "2023",
-      price: 25,
-      views: 450,
-      downloads: 120,
-      rating: 4.5,
-      description: "Standard gear assembly for mechanical applications",
-      isAdmin: false
-    },
-    {
-      id: 4,
-      title: "Valve Housing",
-      type: "STEP",
-      program: "Fusion 360",
-      version: "2023",
-      price: 35,
-      views: 320,
-      downloads: 85,
-      rating: 4.3,
-      description: "Industrial valve housing with mounting brackets",
-      isAdmin: false
-    }
-  ];
+  const [projects, setProjects] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select(`
+            *,
+            profiles (
+              username,
+              full_name,
+              is_creator
+            )
+          `)
+          .eq('is_published', true)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setProjects(data || []);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   return (
     <Layout>
@@ -116,70 +91,89 @@ const Library = () => {
           </div>
 
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {projects.map((project) => (
-              <Card key={project.id} className="bg-industrial-white border-industrial-steel/20 shadow-card hover:shadow-industrial transition-all duration-300 group cursor-pointer">
-                <div className="relative overflow-hidden">
-                  <div className="aspect-[4/3] bg-gradient-industrial flex items-center justify-center">
-                    <div className="text-industrial-steel/50 text-6xl font-bold">3D</div>
-                  </div>
-                  <div className="absolute top-3 left-3">
-                    {project.isAdmin ? (
-                      <Badge className="bg-primary text-primary-foreground">
-                        ADMIN
-                      </Badge>
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-muted-foreground">Loading projects...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {projects.map((project) => (
+                <Card key={project.id} className="bg-industrial-white border-industrial-steel/20 shadow-card hover:shadow-industrial transition-all duration-300 group cursor-pointer">
+                  <div className="relative overflow-hidden">
+                    {project.preview_images && project.preview_images.length > 0 ? (
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <img 
+                          src={project.preview_images[0]} 
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     ) : (
-                      <Badge variant="secondary" className="bg-accent/20 text-accent">
-                        COMMUNITY
-                      </Badge>
+                      <div className="aspect-[4/3] bg-gradient-industrial flex items-center justify-center">
+                        <div className="text-industrial-steel/50 text-6xl font-bold">3D</div>
+                      </div>
                     )}
+                    <div className="absolute top-3 left-3">
+                      {project.profiles?.is_creator ? (
+                        <Badge className="bg-primary text-primary-foreground">
+                          CREATOR
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-accent/20 text-accent">
+                          COMMUNITY
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="absolute top-3 right-3">
+                      <Badge variant="secondary" className="bg-industrial-white/90">
+                        {project.file_url?.split('.').pop()?.toUpperCase() || 'FILE'}
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="absolute top-3 right-3">
-                    <Badge variant="secondary" className="bg-industrial-white/90">
-                      {project.type}
-                    </Badge>
-                  </div>
-                </div>
-                
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                    {project.description}
-                  </p>
                   
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                    <span>{project.program} {project.version}</span>
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-3 w-3 fill-current text-yellow-500" />
-                      <span>{project.rating}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                    <div className="flex items-center space-x-3">
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      {project.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                      <span>By {project.profiles?.username || project.profiles?.full_name || 'Anonymous'}</span>
                       <div className="flex items-center space-x-1">
-                        <Eye className="h-3 w-3" />
-                        <span>{project.views}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Download className="h-3 w-3" />
-                        <span>{project.downloads}</span>
+                        <Star className="h-3 w-3 fill-current text-yellow-500" />
+                        <span>{project.rating || '0'}</span>
                       </div>
                     </div>
-                    <div className="font-semibold text-primary">
-                      ${project.price}
-                    </div>
-                  </div>
 
-                  <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                    View Details
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-1">
+                          <Download className="h-3 w-3" />
+                          <span>{project.download_count || 0}</span>
+                        </div>
+                      </div>
+                      <div className="font-semibold text-primary">
+                        {project.is_free ? 'Free' : `$${project.price}`}
+                      </div>
+                    </div>
+
+                    <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {projects.length === 0 && !isLoading && (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-muted-foreground">No projects found. Be the first to upload!</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Load More */}
           <div className="text-center mt-12">
