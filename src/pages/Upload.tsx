@@ -7,8 +7,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Upload as UploadIcon, FileText, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { FileUpload } from "@/components/FileUpload";
+import { FilePreview } from "@/components/FilePreview";
+import { useState } from "react";
+import { FileUploadMetadata } from "@/hooks/useFileUpload";
+import { useToast } from "@/hooks/use-toast";
 
 const Upload = () => {
+  const [coverImage, setCoverImage] = useState<FileUploadMetadata[]>([]);
+  const [projectFiles, setProjectFiles] = useState<FileUploadMetadata[]>([]);
+  const { toast } = useToast();
+
   // Mock user projects progress
   const userProjects = [
     {
@@ -141,17 +150,38 @@ const Upload = () => {
                     <Label htmlFor="coverPhoto" className="text-foreground font-medium">
                       Cover Photo *
                     </Label>
-                    <div className="mt-1 border-2 border-dashed border-industrial-steel/30 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
-                      <UploadIcon className="h-8 w-8 text-industrial-steel mx-auto mb-2" />
-                      <p className="text-muted-foreground mb-2">
-                        Drag and drop your cover image, or click to browse
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        PNG, JPG up to 5MB
-                      </p>
-                      <Button variant="outline" className="mt-2">
-                        Choose File
-                      </Button>
+                    <div className="mt-1">
+                      <FileUpload
+                        bucket="project-previews"
+                        accept="image/*"
+                        maxFiles={1}
+                        onUploadComplete={(files) => {
+                          setCoverImage(files);
+                          toast({
+                            title: "Cover image uploaded",
+                            description: "Your cover image has been uploaded successfully.",
+                          });
+                        }}
+                      >
+                        <div className="space-y-2">
+                          <UploadIcon className="h-8 w-8 mx-auto text-muted-foreground" />
+                          <p className="text-muted-foreground">
+                            Drag and drop your cover image, or click to browse
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            PNG, JPG, WebP up to 5MB
+                          </p>
+                        </div>
+                      </FileUpload>
+                      
+                      {coverImage.length > 0 && (
+                        <div className="mt-4">
+                          <FilePreview 
+                            files={coverImage} 
+                            onRemove={(index) => setCoverImage([])}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -159,17 +189,39 @@ const Upload = () => {
                     <Label htmlFor="projectFile" className="text-foreground font-medium">
                       Project Files *
                     </Label>
-                    <div className="mt-1 border-2 border-dashed border-industrial-steel/30 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
-                      <FileText className="h-8 w-8 text-industrial-steel mx-auto mb-2" />
-                      <p className="text-muted-foreground mb-2">
-                        Upload your 3D model files
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        STEP, DWG, SLDPRT, F3D files up to 50MB each
-                      </p>
-                      <Button variant="outline" className="mt-2">
-                        Choose Files
-                      </Button>
+                    <div className="mt-1">
+                      <FileUpload
+                        bucket="project-files"
+                        maxFiles={10}
+                        onUploadComplete={(files) => {
+                          setProjectFiles(prev => [...prev, ...files]);
+                          toast({
+                            title: "Project files uploaded",
+                            description: `${files.length} file(s) uploaded successfully.`,
+                          });
+                        }}
+                      >
+                        <div className="space-y-2">
+                          <FileText className="h-8 w-8 mx-auto text-muted-foreground" />
+                          <p className="text-muted-foreground">
+                            Upload your 3D model files
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            STEP, DWG, SLDPRT, F3D files up to 50MB each
+                          </p>
+                        </div>
+                      </FileUpload>
+                      
+                      {projectFiles.length > 0 && (
+                        <div className="mt-4">
+                          <FilePreview 
+                            files={projectFiles} 
+                            onRemove={(index) => {
+                              setProjectFiles(prev => prev.filter((_, i) => i !== index));
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
 
