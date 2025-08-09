@@ -25,9 +25,13 @@ const Library = () => {
       search: searchTerm || undefined,
     };
     
-    const data = await searchProjects(searchParams);
-    if (data) {
-      setProjectsData(data);
+    try {
+      const data = await searchProjects(searchParams);
+      if (data) {
+        setProjectsData(data);
+      }
+    } catch (error) {
+      console.error('Error fetching projects:', error);
     }
   }, [searchProjects, searchTerm, filters]);
 

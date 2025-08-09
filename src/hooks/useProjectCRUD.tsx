@@ -53,8 +53,8 @@ export const useProjectCRUD = () => {
             is_creator,
             avatar_url
           )
-        `, { count: 'exact' })
-        .eq('is_published', true);
+        `, { count: 'exact' });
+        // Show all projects for now (both published and unpublished)
 
       // Apply search filter
       if (params.search) {
