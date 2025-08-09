@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Download, Star, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { Eye, Download, Star, Edit, Trash2, MoreHorizontal, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 
 interface ProjectCardProps {
   project: any;
@@ -28,6 +29,7 @@ export const ProjectCard = ({
 }: ProjectCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useAuth();
+  const { addToCart } = useCart();
 
   const handleDelete = async () => {
     if (!onDelete || !window.confirm('Are you sure you want to delete this project?')) return;
@@ -159,13 +161,28 @@ export const ProjectCard = ({
           </div>
         </div>
 
-        <Button 
-          size="sm" 
-          className="w-full"
-          onClick={() => onView?.(project)}
-        >
-          View Details
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            size="sm" 
+            variant="outline"
+            className="flex-1"
+            onClick={() => onView?.(project)}
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            View
+          </Button>
+          
+          {!isOwner && (
+            <Button 
+              size="sm" 
+              className="flex-1"
+              onClick={() => addToCart(project.id)}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

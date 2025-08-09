@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, User, Settings } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Cart } from "@/components/Cart";
 
 const Header = () => {
   const location = useLocation();
@@ -94,6 +95,9 @@ const Header = () => {
               </Button>
             </Link>
           )}
+          
+          {/* Cart - show when user is logged in */}
+          {user && <Cart />}
           
           {/* Auth section */}
           {user ? (

@@ -45,8 +45,9 @@ export const useProjectCRUD = () => {
         .from('projects')
         .select(`
           *,
-          profiles (
+          profiles!creator_id (
             id,
+            user_id,
             username,
             full_name,
             is_creator,
