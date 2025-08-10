@@ -267,6 +267,30 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          created_at: string
+          endpoint: string | null
+          id: string
+          identifier: string
+          timestamp: number
+        }
+        Insert: {
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          identifier: string
+          timestamp: number
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          identifier?: string
+          timestamp?: number
+        }
+        Relationships: []
+      }
       revenue_tracking: {
         Row: {
           created_at: string
@@ -321,12 +345,63 @@ export type Database = {
           },
         ]
       }
+      security_logs: {
+        Row: {
+          client_ip: string | null
+          created_at: string
+          event_type: string
+          id: string
+          message: string
+          metadata: Json | null
+          severity: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          message: string
+          metadata?: Json | null
+          severity: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          message?: string
+          metadata?: Json | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_old_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      log_security_event: {
+        Args: {
+          p_event_type: string
+          p_severity: string
+          p_message: string
+          p_metadata?: Json
+          p_user_id?: string
+          p_client_ip?: string
+          p_user_agent?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
