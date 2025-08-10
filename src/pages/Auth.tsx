@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Check, X } from 'lucide-react';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +22,29 @@ export default function Auth() {
   
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+
+  // Password validation
+  const validatePassword = (password: string) => {
+    return {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+  };
+
+  const passwordValidation = validatePassword(signUpData.password);
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+
+  const getPasswordStrength = () => {
+    const validCount = Object.values(passwordValidation).filter(Boolean).length;
+    if (validCount <= 2) return { label: "Weak", color: "text-red-500" };
+    if (validCount <= 4) return { label: "Medium", color: "text-yellow-500" };
+    return { label: "Strong", color: "text-green-500" };
+  };
+
+  const passwordStrength = getPasswordStrength();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +198,7 @@ export default function Auth() {
                       value={signUpData.password}
                       onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
                       required
+                      className={signUpData.password && !isPasswordValid ? "border-red-500" : ""}
                     />
                     <Button
                       type="button"
@@ -186,8 +210,42 @@ export default function Auth() {
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
+                  
+                  {signUpData.password && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Password strength:</span>
+                        <span className={`text-sm font-medium ${passwordStrength.color}`}>
+                          {passwordStrength.label}
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-1 text-xs">
+                        <div className={`flex items-center gap-2 ${passwordValidation.length ? 'text-green-600' : 'text-red-500'}`}>
+                          {passwordValidation.length ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                          At least 8 characters
+                        </div>
+                        <div className={`flex items-center gap-2 ${passwordValidation.uppercase ? 'text-green-600' : 'text-red-500'}`}>
+                          {passwordValidation.uppercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                          One uppercase letter
+                        </div>
+                        <div className={`flex items-center gap-2 ${passwordValidation.lowercase ? 'text-green-600' : 'text-red-500'}`}>
+                          {passwordValidation.lowercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                          One lowercase letter
+                        </div>
+                        <div className={`flex items-center gap-2 ${passwordValidation.number ? 'text-green-600' : 'text-red-500'}`}>
+                          {passwordValidation.number ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                          One number
+                        </div>
+                        <div className={`flex items-center gap-2 ${passwordValidation.special ? 'text-green-600' : 'text-red-500'}`}>
+                          {passwordValidation.special ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                          One special character
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading || (signUpData.password && !isPasswordValid)}>
                   {isLoading ? "Creating account..." : "Sign Up"}
                 </Button>
               </form>
