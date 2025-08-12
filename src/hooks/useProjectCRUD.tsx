@@ -50,8 +50,7 @@ export const useProjectCRUD = () => {
             user_id,
             username,
             full_name,
-            is_creator,
-            avatar_url
+            is_creator
           )
         `, { count: 'exact' });
         // Show all projects for now (both published and unpublished)
