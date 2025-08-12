@@ -26,12 +26,15 @@ const Library = () => {
     };
     
     try {
+      console.log('Fetching projects with params:', searchParams);
       const data = await searchProjects(searchParams);
+      console.log('Received projects data:', data);
       if (data) {
         setProjectsData(data);
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      setProjectsData({ projects: [], totalCount: 0, currentPage: 1, totalPages: 0 });
     }
   }, [searchProjects, searchTerm, filters]);
 
