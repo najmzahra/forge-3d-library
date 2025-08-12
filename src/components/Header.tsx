@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut, User, Settings } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Cart } from "@/components/Cart";
+import { MakeAdminButton } from "@/components/MakeAdminButton";
 
 const Header = () => {
   const location = useLocation();
@@ -98,6 +99,9 @@ const Header = () => {
           
           {/* Cart - show when user is logged in */}
           {user && <Cart />}
+          
+          {/* Make Admin Button */}
+          <MakeAdminButton />
           
           {/* Auth section */}
           {user ? (
