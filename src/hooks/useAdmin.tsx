@@ -18,7 +18,7 @@ export const useAdmin = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Check if current user is admin using direct query (simplified for now)
+  // Check if current user is admin by querying user_roles table
   useEffect(() => {
     const checkAdminRole = async () => {
       if (!user) {
@@ -28,10 +28,17 @@ export const useAdmin = () => {
       }
 
       try {
-        // For now, check if user email contains 'admin' or set manually
-        // In production, you'd query the user_roles table
-        const isUserAdmin = user.email?.includes('admin') || false;
-        setIsAdmin(isUserAdmin);
+        // Query the user_roles table to check if user has admin role
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+
+        if (error) throw error;
+        
+        setIsAdmin(!!data);
       } catch (error) {
         console.error('Error checking admin role:', error);
         setIsAdmin(false);
