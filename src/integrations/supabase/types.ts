@@ -7,13 +7,43 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
+      admin_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string
@@ -204,17 +234,22 @@ export type Database = {
       }
       projects: {
         Row: {
+          admin_approved: boolean | null
+          admin_notes: string | null
           category: string | null
           created_at: string
           creator_id: string
           description: string | null
           download_count: number | null
           file_url: string | null
+          guided_steps: Json | null
           id: string
           is_free: boolean | null
+          is_guided: boolean | null
           is_published: boolean | null
           preview_images: string[] | null
           price: number | null
+          priority_order: number | null
           rating: number | null
           rating_count: number | null
           tags: string[] | null
@@ -222,17 +257,22 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          admin_approved?: boolean | null
+          admin_notes?: string | null
           category?: string | null
           created_at?: string
           creator_id: string
           description?: string | null
           download_count?: number | null
           file_url?: string | null
+          guided_steps?: Json | null
           id?: string
           is_free?: boolean | null
+          is_guided?: boolean | null
           is_published?: boolean | null
           preview_images?: string[] | null
           price?: number | null
+          priority_order?: number | null
           rating?: number | null
           rating_count?: number | null
           tags?: string[] | null
@@ -240,17 +280,22 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          admin_approved?: boolean | null
+          admin_notes?: string | null
           category?: string | null
           created_at?: string
           creator_id?: string
           description?: string | null
           download_count?: number | null
           file_url?: string | null
+          guided_steps?: Json | null
           id?: string
           is_free?: boolean | null
+          is_guided?: boolean | null
           is_published?: boolean | null
           preview_images?: string[] | null
           price?: number | null
+          priority_order?: number | null
           rating?: number | null
           rating_count?: number | null
           tags?: string[] | null
@@ -263,6 +308,13 @@ export type Database = {
             columns: ["creator_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -381,30 +433,82 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          full_name: string | null
+          id: string | null
+          is_creator: boolean | null
+          username: string | null
+        }
+        Insert: {
+          full_name?: string | null
+          id?: string | null
+          is_creator?: boolean | null
+          username?: string | null
+        }
+        Update: {
+          full_name?: string | null
+          id?: string | null
+          is_creator?: boolean | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      add_current_user_as_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_old_rate_limits: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       log_security_event: {
         Args: {
+          p_client_ip?: string
           p_event_type: string
-          p_severity: string
           p_message: string
           p_metadata?: Json
-          p_user_id?: string
-          p_client_ip?: string
+          p_severity: string
           p_user_agent?: string
+          p_user_id?: string
         }
         Returns: string
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -531,6 +635,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
