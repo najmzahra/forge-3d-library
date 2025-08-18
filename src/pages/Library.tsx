@@ -26,17 +26,24 @@ const Library = () => {
     };
     
     try {
-      console.log('Fetching projects with params:', searchParams);
+      console.log('🔄 Fetching projects with params:', searchParams);
+      console.log('🔄 isLoading before fetch:', isLoading);
       const data = await searchProjects(searchParams);
-      console.log('Received projects data:', data);
+      console.log('✅ Received projects data:', data);
+      console.log('📊 Projects count:', data?.projects?.length || 0);
+      console.log('📊 Projects details:', data?.projects);
       if (data) {
         setProjectsData(data);
+        console.log('✅ Set projects data in state');
+      } else {
+        console.log('❌ No data received, setting empty state');
+        setProjectsData({ projects: [], totalCount: 0, currentPage: 1, totalPages: 0 });
       }
     } catch (error) {
-      console.error('Error fetching projects:', error);
+      console.error('❌ Error fetching projects:', error);
       setProjectsData({ projects: [], totalCount: 0, currentPage: 1, totalPages: 0 });
     }
-  }, [searchProjects, searchTerm, filters]);
+  }, [searchTerm, filters]); // Remove searchProjects from dependencies
 
   useEffect(() => {
     fetchProjects();

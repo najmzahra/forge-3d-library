@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,7 +29,9 @@ export const useProjectCRUD = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const searchProjects = async (params: ProjectSearchParams = {}): Promise<ProjectsResponse | null> => {
+  const searchProjects = useCallback(async (params: ProjectSearchParams = {}): Promise<ProjectsResponse | null> => {
+    console.log('🔍 searchProjects called with params:', params);
+    console.log('🔍 Current isLoading state:', isLoading);
     setIsLoading(true);
     try {
       const searchParams = new URLSearchParams();
@@ -126,7 +128,7 @@ export const useProjectCRUD = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]); // Add toast as dependency
 
   const createProject = async (projectData: any) => {
     setIsLoading(true);
