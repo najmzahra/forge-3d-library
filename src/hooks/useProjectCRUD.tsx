@@ -52,8 +52,8 @@ export const useProjectCRUD = () => {
             full_name,
             is_creator
           )
-        `, { count: 'exact' });
-        // Show all projects for now (both published and unpublished)
+        `, { count: 'exact' })
+        .eq('is_published', true); // Only show published projects
 
       // Apply search filter
       if (params.search) {
